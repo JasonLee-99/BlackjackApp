@@ -20,6 +20,7 @@ public class loginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
     }
 
+    // when user clicks login
     public void onPressLogin(View view) {
         EditText textEmail = findViewById(R.id.txtEmail);
         EditText textPassword = findViewById(R.id.txtPassword);
@@ -32,6 +33,7 @@ public class loginActivity extends AppCompatActivity {
         );
     }
 
+    // error case
     private void onLoginError(AuthException e) {
         this.runOnUiThread(() -> {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
@@ -40,12 +42,15 @@ public class loginActivity extends AppCompatActivity {
 
     }
 
+    // if login successful
     private void onLoginSuccess(AuthSignInResult authSignInResult) {
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
     }
 
+    // register account
     public void onJoinPressed(View view) {
-
+       Intent intent = new Intent(this, RegisterActivity.class);
+       startActivity(intent);
     }
 }

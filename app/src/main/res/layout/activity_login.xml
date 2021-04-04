@@ -65,7 +65,7 @@
         android:layout_marginTop="24dp"
         android:onClick="onJoinPressed"
         android:textColor="@color/design_default_color_primary_dark"
-        android:text="Register"
+        android:text="Register Here"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

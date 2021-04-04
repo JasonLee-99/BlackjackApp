@@ -22,6 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
     }
 
+    // onclick register button
     public void onPressJoinPressed(View view) {
         EditText textEmail = findViewById(R.id.txtEmail);
         EditText textPassword = findViewById(R.id.txtPassword);
@@ -37,19 +38,19 @@ public class RegisterActivity extends AppCompatActivity {
         );
     }
 
+    // success case
     private void onJoinSuccess(AuthSignUpResult authSignUpResult) {
         EditText textEmail = findViewById(R.id.txtEmail);
         EditText textPassword = findViewById(R.id.txtPassword);
-        EditText textName = findViewById(R.id.txtName);
 
         Intent intent = new Intent(this, EmailConfirmationActivity.class);
         intent.putExtra("email", textEmail.getText().toString());
         intent.putExtra("password", textPassword.getText().toString());
-        intent.putExtra("name", textName.getText().toString());
 
         startActivity(intent);
     }
 
+    // error case
     private void onJoinError(AuthException e) {
         this.runOnUiThread(() -> {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG)
@@ -57,4 +58,9 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    // click login button
+    public void onLoginPressed(View view) {
+        Intent intent = new Intent(this, loginActivity.class);
+        startActivity(intent);
+    }
 }

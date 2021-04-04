@@ -40,10 +40,12 @@ public class EmailConfirmationActivity extends AppCompatActivity {
         );
     }
 
+    // if successful confirmation code
     private void confirmationSuccess(AuthSignUpResult authSignUpResult) {
         reLogin();
     }
 
+    // if error
     private void onError(AuthException e) {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
     }
@@ -60,6 +62,7 @@ public class EmailConfirmationActivity extends AppCompatActivity {
         );
     }
 
+    // success case upon login, saves information in backend datastore
     private void onLoginSuccess(AuthSignInResult authSignInResult) {
         String name = getName();
         String email = getEmail();
@@ -71,11 +74,13 @@ public class EmailConfirmationActivity extends AppCompatActivity {
         );
     }
 
+    // if successfully saved infomation into datastore
     private <T extends Model> void onSavedSucess(DataStoreItemChange<T> tDataStoreItemChange) {
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
     }
 
+    // if error
     private void onError(DataStoreException e) {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
     }

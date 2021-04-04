@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             //Go to Game screen
-            intent = new Intent(getApplicationContext(), RegisterActivity.class);
+            intent = new Intent(getApplicationContext(), MainMenu.class);
         }
 
         //start activity
