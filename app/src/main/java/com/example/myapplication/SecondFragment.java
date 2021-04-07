@@ -133,16 +133,19 @@ public class SecondFragment extends Fragment {
                 String str_temp = temp[0].suit;
                 user[currentHandCard] = temp[0];
                 int count = 0;
+
                 ImageView a;
                 a = (ImageView) view.findViewById(R.id.imageView4);
                 Animation animSlide = AnimationUtils.loadAnimation(v.getContext(),
                         R.anim.slide);
                 a.startAnimation(animSlide);
+
                 for (int i = 0; i < user.length; i++) {
                     if (user[i] != null) {
                         count++;
                     }
                 }
+
 
                 if (count == 3) {
 
@@ -157,9 +160,29 @@ public class SecondFragment extends Fragment {
                 img.setImageResource(drawableId);
 
                 int int_handTotal = checkHandTotal(user);
+                int int_aceTotal;
+                int_aceTotal = checkHandTotal(user);
+                boolean aceFound = false;
+                for(int i = 0; i < user.length; i++) {
+                    if (user[i] != null) {
+                        if(user[i].suit.matches("^.[1]$"))
+                        {
+                            int_aceTotal += 10;
+                            aceFound = true;
+                        }
+                    }
+                }
 
                 userTotal = (TextView) view.findViewById(R.id.user_total_text);
-                userTotal.setText("" + int_handTotal);
+
+               if(aceFound)
+               {
+                    userTotal.setText("" + int_handTotal + " " + int_aceTotal);
+               }
+               else
+               {
+                   userTotal.setText("" + int_handTotal);
+               }
                 winbustCheck(int_handTotal);
 
 
