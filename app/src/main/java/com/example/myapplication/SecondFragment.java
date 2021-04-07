@@ -133,7 +133,11 @@ public class SecondFragment extends Fragment {
                 String str_temp = temp[0].suit;
                 user[currentHandCard] = temp[0];
                 int count = 0;
-
+                ImageView a;
+                a = (ImageView) view.findViewById(R.id.imageView4);
+                Animation animSlide = AnimationUtils.loadAnimation(v.getContext(),
+                        R.anim.slide);
+                a.startAnimation(animSlide);
                 for (int i = 0; i < user.length; i++) {
                     if (user[i] != null) {
                         count++;
@@ -316,8 +320,7 @@ public class SecondFragment extends Fragment {
 
     public void animate(View v)
     {
-        MotionLayout anim = (MotionLayout) v.findViewById(R.id.imageView4);
-        anim.transitionToEnd();
+
     }
 
     public void displayDeck() {

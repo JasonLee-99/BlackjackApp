@@ -50,9 +50,10 @@
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="79dp"
             android:layout_height="151dp"
-            android:layout_marginEnd="33dp"
+            android:layout_marginEnd="32dp"
             motion:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="32dp" />
         <Constraint
             android:id="@+id/hit"
             android:layout_width="wrap_content"
@@ -79,4 +80,5 @@
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="604dp" />
     </ConstraintSet>
+
 </MotionScene>
