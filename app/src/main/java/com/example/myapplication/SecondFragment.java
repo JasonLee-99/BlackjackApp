@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.User;
 
 import org.w3c.dom.Text;
 
@@ -260,6 +266,14 @@ public class SecondFragment extends Fragment {
                 String finalMsg = (check + "  wins!!!");
                 if(check.equals("tie")){
                     finalMsg = "Its a tie!";
+                }
+                if (check.equals("player")) {
+                    // update player database score +1
+
+                }
+                if (check.equals("dealer")) {
+                    // update player database score -1
+
                 }
                 winner = (TextView)view.findViewById(R.id.winner);
                 winner.setText(finalMsg);
