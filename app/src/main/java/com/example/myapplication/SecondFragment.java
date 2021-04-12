@@ -2,15 +2,22 @@ package com.example.myapplication;
 
 import android.media.Image;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -23,9 +30,9 @@ public class SecondFragment extends Fragment {
 
     public static final int nCards = 52;
     private Card[] deck;
-    private Card[] user ;
+    private Card[] user;
     private Card[] dealer;
-    private Card[]temp;
+    private Card[] temp;
     private int currentCard;
     private int currentHandCard;
     private int dealerHandSize;
@@ -54,20 +61,19 @@ public class SecondFragment extends Fragment {
         b = (Button) view.findViewById(R.id.hit);
         b2 = (Button) view.findViewById(R.id.stand);
         deck = new Card[nCards];
-
         deck = createDeck();
 
         user = new Card[nCards];
         dealer = new Card[nCards];
 
         shuffleDeck();
-        for(int i = 0; i < 2; i++){
+        for (int i = 0; i < 2; i++) {
             user[i] = deal();
             dealer[i] = deal();
         }
 
         currentHandCard = 1; //represents array index [1] so, 2 cards.
-        dealerHandSize =1;
+        dealerHandSize = 1;
         //generate pictures
 
         //change user 2nd card
@@ -107,18 +113,16 @@ public class SecondFragment extends Fragment {
         deal2.setImageResource(deal2_id);
 
 
-
-
         //need to check hand total
         int int_handTotal;
         int_handTotal = checkHandTotal(user);
 
-        userTotal = (TextView)view.findViewById(R.id.user_total_text);
+        userTotal = (TextView) view.findViewById(R.id.user_total_text);
         userTotal.setText("" + int_handTotal);
 
         winbustCheck(int_handTotal);
 
-
+        //Btn Hit
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,53 +132,82 @@ public class SecondFragment extends Fragment {
                 temp[0] = deal();
                 String str_temp = temp[0].suit;
                 user[currentHandCard] = temp[0];
-
-
                 int count = 0;
 
-                for(int i = 0; i < user.length; i ++){
-                    if(user[i] != null){
+                ImageView a;
+                a = (ImageView) view.findViewById(R.id.imageView4);
+                Animation animSlide = AnimationUtils.loadAnimation(v.getContext(),
+                        R.anim.slide);
+                a.startAnimation(animSlide);
+
+                for (int i = 0; i < user.length; i++) {
+                    if (user[i] != null) {
                         count++;
                     }
                 }
 
-                if(count == 3) {
+
+                if (count == 3) {
+
                     img = (ImageView) view.findViewById(R.id.user_pos3);
-                }else if(count == 4){
+                } else if (count == 4) {
                     img = (ImageView) view.findViewById(R.id.user_pos4);
-                }else if(count == 5){
+                } else if (count == 5) {
                     img = (ImageView) view.findViewById(R.id.user_pos5);
                 }
                 int drawableId = getResources().getIdentifier(str_temp, "drawable", getActivity().getPackageName());
 
                 img.setImageResource(drawableId);
 
-               int int_handTotal = checkHandTotal(user);
+                int int_handTotal = checkHandTotal(user);
+                int int_aceTotal;
+                int_aceTotal = checkHandTotal(user);
+                boolean aceFound = false;
+                for(int i = 0; i < user.length; i++) {
+                    if (user[i] != null) {
+                        if(user[i].suit.matches("^.[1]$"))
+                        {
+                            int_aceTotal += 10;
+                            aceFound = true;
+                        }
+                    }
+                }
 
-                userTotal = (TextView)view.findViewById(R.id.user_total_text);
-                userTotal.setText("" + int_handTotal);
-               winbustCheck(int_handTotal);
+                userTotal = (TextView) view.findViewById(R.id.user_total_text);
+
+               if(aceFound)
+               {
+                    userTotal.setText("" + int_handTotal + " " + int_aceTotal);
+               }
+               else
+               {
+                   userTotal.setText("" + int_handTotal);
+               }
+                winbustCheck(int_handTotal);
+
+
             }
         });
 
+        //btn stand
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 playerFinalTotal = checkHandTotal(user);
 
                 //checking for ace conversion
-                if(playerFinalTotal < 21){
-                    for(int i = 0; i < currentHandCard ; i++){
-                        int card = Integer.parseInt( user[i].suit.substring(1, user[i].suit.length())  ) ;
-                        if(card == 1){
-                            if((playerFinalTotal + 10) <= 21){
+                if (playerFinalTotal < 21) {
+                    for (int i = 0; i < currentHandCard; i++) {
+                        int card = Integer.parseInt(user[i].suit.substring(1, user[i].suit.length()));
+                        if (card == 1) {
+                            if ((playerFinalTotal + 10) <= 21) {
                                 playerFinalTotal += 10;
                             }
                         }
                     }
                 }
 
-                userTotal = (TextView)view.findViewById(R.id.user_total_text);
+                userTotal = (TextView) view.findViewById(R.id.user_total_text);
                 userTotal.setText("" + playerFinalTotal);
 
                 System.out.println("The player's final hand total is: " + playerFinalTotal);
@@ -188,7 +221,7 @@ public class SecondFragment extends Fragment {
                 String deal1_temp;
                 deal1 = (ImageView) view.findViewById(R.id.dealer1);
                 deal1_temp = dealer[0].suit;
-                int deal1_id = getResources().getIdentifier(deal1_temp,"drawable", getActivity().getPackageName());
+                int deal1_id = getResources().getIdentifier(deal1_temp, "drawable", getActivity().getPackageName());
                 deal1.setImageResource(deal1_id);
 
                 int int_dealerTotal;
@@ -196,7 +229,7 @@ public class SecondFragment extends Fragment {
                 int_dealerTotal = checkHandTotal(dealer);
                 System.out.println(int_dealerTotal);
                 //check for aces
-                if(int_dealerTotal < 16) {
+                if (int_dealerTotal < 16) {
                     for (int i = 0; i < dealerHandSize; i++) {
                         int card = Integer.parseInt(dealer[i].suit.substring(1, dealer[i].suit.length()));
                         if (card == 1) {
@@ -208,7 +241,7 @@ public class SecondFragment extends Fragment {
                 }
 
                 //card 1
-                if(int_dealerTotal < 16) {
+                if (int_dealerTotal < 16) {
                     temp = new Card[1];
                     temp[0] = deal();
                     dealerHandSize++;
@@ -223,27 +256,27 @@ public class SecondFragment extends Fragment {
                     int_dealerTotal = checkHandTotal(dealer);
 
                 }
-                    if(int_dealerTotal < 16){
-                        Card[] temp2 = new Card[1];
-                        temp2[0] = deal();
-                        dealerHandSize++;
-                        dealer[3] = temp2[0];
-                        String str_temp2 = temp2[0].suit;
+                if (int_dealerTotal < 16) {
+                    Card[] temp2 = new Card[1];
+                    temp2[0] = deal();
+                    dealerHandSize++;
+                    dealer[3] = temp2[0];
+                    String str_temp2 = temp2[0].suit;
 
-                        img = (ImageView) view.findViewById(R.id.dealer_pos4);
+                    img = (ImageView) view.findViewById(R.id.dealer_pos4);
 
-                        int drawableId2 = getResources().getIdentifier(str_temp2, "drawable", getActivity().getPackageName());
-                        img.setImageResource(drawableId2);
+                    int drawableId2 = getResources().getIdentifier(str_temp2, "drawable", getActivity().getPackageName());
+                    img.setImageResource(drawableId2);
 
-                        int_dealerTotal = checkHandTotal(dealer);
-                    }
+                    int_dealerTotal = checkHandTotal(dealer);
+                }
 
                 DealerFinalTotal = checkHandTotal(dealer);
-                if(DealerFinalTotal < 21){
-                    for(int i = 0; i < dealerHandSize ; i++){
-                        int card = Integer.parseInt( dealer[i].suit.substring(1, dealer[i].suit.length())  ) ;
-                        if(card == 1){
-                            if((DealerFinalTotal + 10) < 21){
+                if (DealerFinalTotal < 21) {
+                    for (int i = 0; i < dealerHandSize; i++) {
+                        int card = Integer.parseInt(dealer[i].suit.substring(1, dealer[i].suit.length()));
+                        if (card == 1) {
+                            if ((DealerFinalTotal + 10) < 21) {
                                 DealerFinalTotal += 10;
                             }
                         }
@@ -252,16 +285,16 @@ public class SecondFragment extends Fragment {
 
                 System.out.println("The dealers's final hand total is: " + DealerFinalTotal);
 
-                dealerTotal = (TextView)view.findViewById(R.id.dealer_total_text);
+                dealerTotal = (TextView) view.findViewById(R.id.dealer_total_text);
                 dealerTotal.setText("" + DealerFinalTotal);
                 String check = " ";
-                check = compareHands(playerFinalTotal,DealerFinalTotal);
+                check = compareHands(playerFinalTotal, DealerFinalTotal);
 
                 String finalMsg = (check + "  wins!!!");
-                if(check.equals("tie")){
+                if (check.equals("tie")) {
                     finalMsg = "Its a tie!";
                 }
-                winner = (TextView)view.findViewById(R.id.winner);
+                winner = (TextView) view.findViewById(R.id.winner);
                 winner.setText(finalMsg);
 
             }
@@ -276,19 +309,17 @@ public class SecondFragment extends Fragment {
         });
 
 
-
-
     }
 
-    public static String generateCard(){
+    public static String generateCard() {
 
         String[] suits = {"d", "c", "h", "s"};
-        int randomNum = 1+ (int)(Math.random() * 13);
-        int randomSuit = (int)(Math.random() * 4);
+        int randomNum = 1 + (int) (Math.random() * 13);
+        int randomSuit = (int) (Math.random() * 4);
 
 
         String str_temp = (suits[randomSuit]) + randomNum;
-        return  str_temp;
+        return str_temp;
     }
 
 
@@ -297,17 +328,22 @@ public class SecondFragment extends Fragment {
         return card;
     }
 
-    public Card[] createDeck(){
+    public Card[] createDeck() {
         int i = 0;
 
         deck = new Card[nCards];
-        for ( int suit = Card.DIAMOND; suit <= Card.SPADE; suit++ )
-            for ( int rank = 1; rank <= 13; rank++ )
+        for (int suit = Card.DIAMOND; suit <= Card.SPADE; suit++)
+            for (int rank = 1; rank <= 13; rank++)
                 deck[i++] = new Card(suit, rank);
 
         currentCard = 0;
 
         return deck;
+    }
+
+    public void animate(View v)
+    {
+
     }
 
     public void displayDeck() {
