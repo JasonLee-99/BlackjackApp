@@ -44,7 +44,7 @@ public class SecondFragment extends Fragment {
     TextView userTotal;
     TextView dealerTotal;
     TextView winner;
-
+    Button playAgain;
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -56,7 +56,8 @@ public class SecondFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         //variables
-
+        playAgain = (Button) view.findViewById(R.id.playAgain);
+        playAgain.setEnabled(false);
         super.onViewCreated(view, savedInstanceState);
         b = (Button) view.findViewById(R.id.hit);
         b2 = (Button) view.findViewById(R.id.stand);
@@ -69,8 +70,9 @@ public class SecondFragment extends Fragment {
         shuffleDeck();
         for (int i = 0; i < 2; i++) {
             user[i] = deal();
-            dealer[i] = deal();
+           dealer[i] = deal();
         }
+
 
         currentHandCard = 1; //represents array index [1] so, 2 cards.
         dealerHandSize = 1;
@@ -120,6 +122,38 @@ public class SecondFragment extends Fragment {
         userTotal = (TextView) view.findViewById(R.id.user_total_text);
         userTotal.setText("" + int_handTotal);
 
+        //
+
+        int int_aceTotal = 0;
+        int_aceTotal = int_handTotal;
+        boolean aceFound = false;
+
+        for(int i = 0; i < user.length; i++) {
+            if (user[i] != null) {
+                if(user[i].suit.matches("^.[1]$"))
+                {
+                        int_aceTotal += 10;
+                        aceFound = true;
+                }
+            }
+        }
+
+        userTotal = (TextView) view.findViewById(R.id.user_total_text);
+
+        if(aceFound && int_handTotal < 21)
+        {
+            String temp = (int_handTotal + " or " + int_aceTotal);
+            userTotal.setText(temp);
+        }
+        else
+        {
+            userTotal.setText("" + int_handTotal);
+            if(int_handTotal == 21){
+                winner = (TextView) view.findViewById(R.id.winner);
+                winner.setText("Player wins!!!");
+            }
+        }
+
         winbustCheck(int_handTotal);
 
         //Btn Hit
@@ -161,7 +195,7 @@ public class SecondFragment extends Fragment {
 
                 int int_handTotal = checkHandTotal(user);
                 int int_aceTotal;
-                int_aceTotal = checkHandTotal(user);
+                int_aceTotal = int_handTotal;
                 boolean aceFound = false;
                 for(int i = 0; i < user.length; i++) {
                     if (user[i] != null) {
@@ -175,17 +209,36 @@ public class SecondFragment extends Fragment {
 
                 userTotal = (TextView) view.findViewById(R.id.user_total_text);
 
-               if(aceFound)
+               if(aceFound && int_handTotal <= 21 && (int_handTotal+10 <= 21))
                {
-                    userTotal.setText("" + int_handTotal + " " + int_aceTotal);
+                   String temp = ("" + int_handTotal + " or " + int_aceTotal);
+                    userTotal.setText(temp);
                }
                else
                {
                    userTotal.setText("" + int_handTotal);
                }
-                winbustCheck(int_handTotal);
+               String winnertext;
+                winnertext = winbustCheck(int_handTotal );
 
 
+
+                winner = (TextView) view.findViewById(R.id.winner);
+
+
+                if (winnertext.equals("")){
+
+                }else{
+                    winner.setText(winnertext + "  wins!!!");
+                }
+            }
+        });
+
+        view.findViewById(R.id.playAgain).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(SecondFragment.this)
+                        .navigate(R.id.action_SecondFragment_self);
             }
         });
 
@@ -193,6 +246,7 @@ public class SecondFragment extends Fragment {
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                playAgain.setEnabled(true);
                 playerFinalTotal = checkHandTotal(user);
 
                 //checking for ace conversion
@@ -308,8 +362,9 @@ public class SecondFragment extends Fragment {
             }
         });
 
-
     }
+
+
 
     public static String generateCard() {
 
@@ -367,7 +422,7 @@ public class SecondFragment extends Fragment {
     public void shuffleDeck()
     {
 
-        for(int i = 0; i < (nCards / 2); i++)
+        for(int i = 0; i < 1000 ; i++)
         {
             int cardOne = rollCard();
             int cardTwo = rollCard();
@@ -441,15 +496,21 @@ public class SecondFragment extends Fragment {
     }
 
 
-    public void winbustCheck(int int_handTotal){
-
+    public String winbustCheck(int int_handTotal){
+        String winner = "";
         if(int_handTotal == 21){
-            System.out.println("Winnnneer");
-        }else if(int_handTotal > 21){
-            System.out.println("Bustt");
             b.setEnabled(false);
             b2.setEnabled(false);
+            playAgain.setEnabled(true);
+            winner = "player";
+        }else if(int_handTotal > 21){
+            b.setEnabled(false);
+            b2.setEnabled(false);
+            playAgain.setEnabled(true);
+            winner = "dealer";
         }
+
+        return winner;
     }
 
     public String compareHands(int playerHand, int dealerHand){

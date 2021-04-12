@@ -222,5 +222,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/playAgain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play Again"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="669dp" />
+
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
